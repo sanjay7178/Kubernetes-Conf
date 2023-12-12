@@ -3,49 +3,50 @@
 Vagrant.configure("2") do |config|
   # Define the base box (Ubuntu 20.04 in this case)
   #config.ssh.private_key_path = File.expand_path('~/.ssh/id_rsa')
-  config.vm.box = "ubuntu/focal64"
+  config.vm.box = "bento/ubuntu-22.04"
   #config.ssh.private_key_path = ~/.ssh/id_rsa
   config.ssh.forward_agent = true
   ssh_pub_key = File.readlines("/home/sanjay7178/.ssh/id_rsa.pub").first.strip
+  config.vm.synced_folder "../../kubeadm-scripts", "~/", disabled: true
   config.vm.provision "shell", inline: <<-SHELL
     echo #{ssh_pub_key} >> /home/vagrant/.ssh/authorized_keys
     echo #{ssh_pub_key} >> /root/.ssh/authorized_keys
-    echo "Hello from inline provisioning!"
+    sudo apt-get update -y
+    echo git clone https://github.com/techiescamp/kubeadm-scripts
+    echo sudo bash "~/kubeadm-scripts/common.sh"
+    echo "10.0.0.10  master-node" >> /etc/hosts
+    echo "10.0.0.11  worker-node01" >> /etc/hosts
+    echo "10.0.0.12  worker-node02" >> /etc/hosts
+    echo "VM provisioned successfully."
   SHELL
 
 
 
   # Create three VMs with specific IP addresses
-  config.vm.define "node1" do |node|
-    node.vm.hostname = "node1"
+  config.vm.define "master" do |node|
+    node.vm.hostname = "master-node"
     node.vm.network "private_network", type: "dhcp"
-    node.vm.network "private_network", type: "static", ip: "192.168.56.11"
+    node.vm.network "private_network", type: "static", ip: "192.168.56.10"
     node.vm.provider "virtualbox" do |vb|
-      vb.memory = "3072" # Set memory size for each VM
+      vb.memory = "4048" # Set memory size for each VM
       vb.cpus = 2        # Set CPU count for each VM
     end
   end
 
-  config.vm.define "node2" do |node|
-    node.vm.hostname = "node2"
+  (1..2).each do |i|
+  config.vm.define "node0#{i}" do |node|
+    node.vm.hostname = "worker-node0#{i}"
     node.vm.network "private_network", type: "dhcp"
-    node.vm.network "private_network", type: "static", ip: "192.168.56.12"
+    node.vm.network "private_network", type: "static", ip: "192.168.56.1#{i}"
     node.vm.provider "virtualbox" do |vb|
-      vb.memory = "3072"
+      vb.memory = "2048"
       vb.cpus = 2
     end
   end
 
-  config.vm.define "node3" do |node|
-    node.vm.hostname = "node3"
-    node.vm.network "private_network", type: "dhcp"
-    node.vm.network "private_network", type: "static", ip: "192.168.56.13"
-    node.vm.provider "virtualbox" do |vb|
-      vb.memory = "3072"
-      vb.cpus = 2
-    end
-  end
 
   # Use a shell script to provision the VMs
-  config.vm.provision "shell", path: "provision.sh"
+  # config.vm.provision "shell", path: "provision.sh"
+
+  end
 end
