@@ -40,25 +40,9 @@ EOF
 
 sudo sysctl --system
 
-cat <<EOF | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
-deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/ /
-EOF
-cat <<EOF | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable:cri-o:$VERSION.list
-deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/$VERSION/$OS/ /
-EOF
 
-curl -L https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable:cri-o:$VERSION/$OS/Release.key | sudo apt-key --keyring /etc/apt/trusted.gpg.d/libcontainers.gpg add -
-curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/Release.key | sudo apt-key --keyring /etc/apt/trusted.gpg.d/libcontainers.gpg add -
 
-sudo apt-get update
-sudo apt-get install cri-o cri-o-runc -y
-
-sudo systemctl daemon-reload
-sudo systemctl enable crio --now
-
-echo "CRI runtime installed susccessfully"
-
-Install kubelet, kubectl and Kubeadm
+# Install kubelet, kubectl and Kubeadm
 sudo mkdir -m 755 /etc/apt/keyrings
 
 sudo apt-get update -y
@@ -67,14 +51,45 @@ sudo apt-get install -y apt-transport-https ca-certificates curl
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 sudo apt-get update
-sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-get install -y kubelet=$VERSION kubeadm==$VERSION kubectl==$VERSION
 sudo apt-mark hold kubelet kubeadm kubectl
 sudo apt-get update -y
 sudo apt-get install -y jq
 
-
-
 local_ip="$(ip --json addr show eth0 | jq -r '.[0].addr_info[] | select(.family == "inet") | .local')"
 cat > /etc/default/kubelet << EOF
 KUBELET_EXTRA_ARGS=--node-ip=$local_ip
+
+# Adding Docker.io as container runtime
+sudo apt install docker.io
+sudo mkdir /etc/containerd
+sudo sh -c "containerd config default > /etc/containerd/config.toml"
+sudo sed -i 's/ SystemdCgroup = false/ SystemdCgroup = true/' /etc/containerd/config.toml
+
+# restart containerd and kubelet services
+sudo systemctl restart containerd.service
+sudo systemctl restart kubelet.service
+
+
+
+
 EOF
+
+
+# cat <<EOF | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
+# deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/ /
+# EOF
+# cat <<EOF | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable:cri-o:$VERSION.list
+# deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/$VERSION/$OS/ /
+# EOF
+
+# curl -L https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable:cri-o:$VERSION/$OS/Release.key | sudo apt-key --keyring /etc/apt/trusted.gpg.d/libcontainers.gpg add -
+# curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/Release.key | sudo apt-key --keyring /etc/apt/trusted.gpg.d/libcontainers.gpg add -
+
+# sudo apt-get update
+# sudo apt-get install cri-o cri-o-runc -y
+
+# sudo systemctl daemon-reload
+# sudo systemctl enable crio --now
+
+# echo "CRI runtime installed susccessfully"
