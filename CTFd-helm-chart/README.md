@@ -1,4 +1,11 @@
-![image](https://github.com/sanjay7178/Kubernetes-Conf/assets/97831658/e767938f-8f99-42aa-ba4f-c27b3bf0f6cd)### High Available CTFd based on premise/cloud kubernetes cluster Infrastructer
+### High Available CTFd based on premise/cloud kubernetes cluster Infrastructer
+
+### Resource links to get started
+- Istio - https://www.youtube.com/watch?v=H4YIKwAQMKk
+- CertManager - https://www.youtube.com/watch?v=DvXkD0f-lhY , https://www.youtube.com/watch?v=IQ3G8Z1myMw
+- Metallb -  https://akyriako.medium.com/load-balancing-with-metallb-in-bare-metal-kubernetes-271aab751fb8
+- ArgoCD & gitops -  https://www.youtube.com/watch?v=8YLsQIG2Svo
+
 
 ### Final Agenda
 - Need to make helm chart or custom kubernetes object configuration (.yaml) files for custom ctf cluster
@@ -17,6 +24,7 @@
 
 ### open source ctfd helm chart to try out
 https://artifacthub.io/packages/helm/ctfd/ctfd
+
 
 ### Proposed Pipeline
 
