@@ -1,0 +1,38 @@
+kind : Deployment 
+apiVersion: apps/v1
+metadata: 
+  name: notes-app-deployment
+  labels: 
+    app : notes-app
+  namespace : nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app:  notes-app
+
+  template:
+    metadata:
+      name : notes-app-tempelate
+      labels:
+        app:  notes-app
+
+    spec:
+      containers:
+      - name: notes-app
+        image:  sanjay7178/notes-app-k8s:v2
+        # command: [ "python"  ,"/app/backend/manage.py" , "runserver" , "0.0.0.0:8000"]
+        ports:
+        - containerPort: 8000 
+        livenessProbe:
+          httpGet:
+            path: / 
+            port: 8000
+        #readinesisProbe #only works on prod kubernetes such as eks
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
