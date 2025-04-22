@@ -19,6 +19,6 @@ nodes:
 #- role: worker
 #  image: kindest/node:v1.31.2
 networking:
-  apiServerAddress: "45.129.182.243"   # Bind to all interfaces (including the public IP)
+  apiServerAddress: ""   # Bind to all interfaces (including the public IP)
   apiServerPort: 45803           # External port for API server
 ```
