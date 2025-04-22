@@ -22,3 +22,15 @@ networking:
   apiServerAddress: ""   # Bind to all interfaces (including the public IP)
   apiServerPort: 45803           # External port for API server
 ```
+
+create a kind cluster
+
+```
+kind create cluster --config  kind-cluster-config.yml --name kubebrowse-cluster 
+
+```
+get kubeconfig from kind 
+
+```
+kind get kubeconfig --name=kind-kubebrowse-cluster
+```
