@@ -3,7 +3,7 @@ marp: true
 theme: graph_paper
 paginate: true
 header: Introduction to Kubernetes (k8s)
-#footer: This is a footer
+footer: Kubernetes Unboxed
 title: Marp custom themes
 math: mathjax
 _class: lead
@@ -116,15 +116,139 @@ section.tinytext>blockquote {
     <div class="name">Sai Sanjay</div>
     <div class="title">GSoC 2025 , Open Science Labs </div>
     <div class="title">Chapter Lead , Null Vijayawada </div>
+    <div class="title">Prev Vice President Null Chapter  </div>
+    <div class="title">Cloud Native Enthusiast </div>
     <!-- socials -->
     <div class="social">
         <a href="https://twitter.com/sanjay7178">Twitter</a>
         <a href="https://github.com/sanjay7178">GitHub</a>
         <a href="https://linkedin.com/in/sanjay7178">LinkedIn</a>
     </div>
+    <div class="title">Chapter Lead , Null Vijayawada </div>
+
+---
+# Agenda
+- Whats the difference between Cloud and Cloud Native ?
+- Whats the difference between Virtual Machines and Containers ?
+- Whats the difference between Docker and Kubernetes ?
+- Why do we need Kubernetes ?
+- What is a container ?
+- What is a Pod ?
+- What is a Node ?
+- What is a Cluster ?
+
+---
+## Agenda (contd..)
+- What is a Namespace ?
+- What is a Deployment ?
+- What is a Service ?
+- What is a ConfigMap ?
+- What is a Secret ?
+- What is a Volume ?
+- What is a Persistent Volume (PV) ?
+- What is a Persistent Volume Claim (PVC) ?
+- What is a StatefulSet ?
+- And many more...
+---
+## These are know as k8s Objects
+
+![center alt text](k8s-objects.png)
+
+---
+## Are you getting overwhelmed ?
+<img src="k8s-meme-1.png"  width="600" alt="center"/>
+
+
+---
+## Don't worry , I got you covered
+
+<img src="k8s-meme-2.png"  width="650" alt="center"/>
 
 ---
 
+## Prerequisites
+- Basic understanding of Linux commands
+- Basic understanding of Docker
+- Basic understanding of YAML
+- Basic understanding of Networking
+- Basic understanding of Virtualization
+- Basic understanding of Cloud Computing
+
+---
+## Production k8s Clusters 
+- Google Kubernetes Engine (GKE)
+- Amazon Elastic Kubernetes Service (EKS)
+- Azure Kubernetes Service (AKS)
+- DigitalOcean Kubernetes
+- K3s (Lightweight k8s for IoT and Edge devices)
+- OpenShift (RedHat's k8s distribution)
+- Rancher (k8s management platform)
+- VMware Tanzu (Enterprise k8s platform)
+- IBM Cloud Kubernetes Service
+--- 
+## Local k8s Clusters
+- Minikube 
+- MicroK8s
+- kind (Kubernetes IN Docker) 
+- k3d (k3s in Docker)
+- Docker Desktop (comes with k8s support)
+- Podman (comes with k8s support)
+
+> Note: Podman is a daemonless container engine for developing, managing, and running OCI Containers on your Linux System. It is a popular alternative to Docker.
+--- 
+### For now we will be using kind (Kubernetes IN Docker) to set up a local k8s cluster
+- kind runs k8s clusters in Docker containers
+- kind is primarily designed for testing k8s itself, but may be used for local development and CI
+- kind is a great tool for learning and experimenting with k8s
+- kind is easy to set up and use
+- kind is open source and free to use
+- kind is maintained by the k8s community
+--- 
+### Setup k8s in podman desktop 
+
+![alt text](podman-k8s.png)
+## Getting Started 
+
+- Install Docker Desktop (Windows/Mac) or Docker Engine (Linux)
+- Install kubectl (Kubernetes command line tool)
+```bash
+# For Windows
+winget install -e --id Kubernetes.kubectl 
+winget install -e --id ahmetb.kubectx
+winget install -e --id Helm.Helm
+# For Mac & Linux
+brew install kubectl kubectx helm 
+```
+- Install kind (Kubernetes IN Docker) : [link](https://kind.sigs.k8s.io/docs/user/quick-start/#installing-from-release-binaries)
+
+
+---
+### Setting up a local Kubernetes Cluster using kind
+```yaml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+
+nodes:
+- role: control-plane
+  image: kindest/node:v1.32.2
+- role: worker
+  image: kindest/node:v1.32.2
+- role: worker
+  image: kindest/node:v1.32.2
+  extraPortMappings:
+  - containerPort : 80 
+    hostPort : 80
+    protocol : TCP 
+  - containerPort : 443
+#- role: worker
+#  image: kindest/node:v1.31.2
+networking:
+  apiServerAddress: ""   # Bind to all interfaces (including the public IP)
+  apiServerPort: 45803           # External port for API server
+  
+```
+
+---
 <!-- _class: title -->
 
 # A very long title of my beamer-esque presentation
