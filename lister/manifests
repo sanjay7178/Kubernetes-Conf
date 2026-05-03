@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: lister
+  name: lister
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lister
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: lister
+    spec:
+      containers:
+      - image: sanjay7178/lister:0.10.0
+        name: lister
+        resources: {}
+status: {}
